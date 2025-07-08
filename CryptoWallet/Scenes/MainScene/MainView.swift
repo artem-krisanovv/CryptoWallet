@@ -1,8 +1,7 @@
-//
-//  MainView.swift
-//  CryptoWallet
-//
-//  Created by Артем Крисанов on 08.07.2025.
-//
+import UIKit
 
-import Foundation
+class MainViewController: UIViewController {
+    
+    var viewModel: MainViewModel!
+    
+}

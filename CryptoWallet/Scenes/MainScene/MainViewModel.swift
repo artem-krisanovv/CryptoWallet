@@ -1,2 +1,5 @@
-
 import Foundation
+
+class MainViewModel {
+    
+}
