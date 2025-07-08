@@ -5,8 +5,4 @@ final class Router {
     
     private init() {}
     
-    func navigate<T: UIViewController>(to viewController: T.Type) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: String(describing: viewController)) as! T
-    }
 }
