@@ -24,8 +24,8 @@ final class AppRouter {
     }
     
     func showCryptoList() {
-        let listVC = MainViewController()
-        listVC.viewModel = MainViewModel()
+        let listVC = HomeViewController()
+        listVC.viewModel = HomeViewModel()
         let navigation = UINavigationController(rootViewController: listVC)
         setRootViewController(navigation)
     }

@@ -6,9 +6,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        let window = UIWindow(windowScene: windowScene)
+        /*let window = UIWindow(windowScene: windowScene)
         AppRouter.shared.start(in: window)
-        self.window = window
+        self.window = window*/
+        
+        window = UIWindow(windowScene: windowScene)
+        window?.rootViewController = HomeViewController()
+        window?.makeKeyAndVisible()
     }
 }
 
