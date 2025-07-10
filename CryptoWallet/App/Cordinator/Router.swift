@@ -10,7 +10,7 @@ final class AppRouter {
     func start(in window: UIWindow?) {
         self.window = window
         
-        if AuthStorage.shared.isAuthorized {
+        if true /*AuthStorage.shared.isAuthorized*/ {
             showCryptoList()
         } else {
             showAuth()
@@ -24,10 +24,8 @@ final class AppRouter {
     }
     
     func showCryptoList() {
-        let listVC = HomeViewController()
-        listVC.viewModel = HomeViewModel()
-        let navigation = UINavigationController(rootViewController: listVC)
-        setRootViewController(navigation)
+        let tabBarController = TabBarController()
+        setRootViewController(tabBarController)
     }
     
     func logout() {
