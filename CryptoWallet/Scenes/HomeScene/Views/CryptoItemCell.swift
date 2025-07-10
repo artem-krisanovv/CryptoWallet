@@ -2,10 +2,42 @@ import UIKit
 import SnapKit
 
 class CryptoItemCell: UITableViewCell {
-    private let iconImageView = UIImageView()
-    private let nameLabel = UILabel()
-    private let priceLabel = UILabel()
-    private let changeLabel = UILabel()
+   
+    private let iconImageView: UIImageView = {
+        let imageView = UIImageView()
+        return imageView
+    }()
+    private let nameLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Poppins-SemiBold", size: 18)
+        return label
+    }()
+    
+    private let symbolLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Poppins-SemiBold", size: 14)
+        label.textColor = .lightGray
+        return label
+    }()
+    
+    private let priceLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Poppins-SemiBold", size: 18)
+        return label
+    }()
+    
+    private let percentLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont(name: "Poppins-SemiBold", size: 14)
+        label.textColor = .lightGray
+        return label
+    }()
+    
+    private let changeLabel: UIImageView = {
+        let label = UIImageView()
+        label.contentMode = .scaleAspectFit
+        return label
+    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -17,32 +49,60 @@ class CryptoItemCell: UITableViewCell {
     }
 
     func configure(with model: CryptoModel) {
+        contentView.backgroundColor = .background
         iconImageView.image = UIImage(named: model.iconName)
-        nameLabel.text = "\(model.name) (\(model.symbol))"
+        nameLabel.text = "\(model.name)"
         priceLabel.text = "$\(model.price)"
-        changeLabel.text = "\(model.priceChange)%"
-        changeLabel.textColor = model.priceChange >= 0 ? .systemGreen : .systemRed
+        percentLabel.text = "\(model.priceChange)%"
+        symbolLabel.text = "\(model.symbol)"
+        changeLabel.image = model.priceChange >= 0 ? UIImage(named: "arrowUp") : UIImage(named: "arrowDown")
+        
     }
 
     private func setupUI() {
-        [iconImageView, nameLabel, priceLabel, changeLabel].forEach { contentView.addSubview($0) }
+        [iconImageView, nameLabel, priceLabel, changeLabel, percentLabel, symbolLabel].forEach {
+            contentView.addSubview($0)
+        }
         
-        iconImageView.snp.makeConstraints {
-            $0.leading.equalToSuperview().inset(16)
-            $0.centerY.equalToSuperview()
-            $0.size.equalTo(40)
+        iconImageView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(25)
+            make.top.equalToSuperview().inset(10)
+            make.size.equalTo(40)
         }
-        nameLabel.snp.makeConstraints {
-            $0.leading.equalTo(iconImageView.snp.trailing).offset(12)
-            $0.top.equalToSuperview().offset(12)
+        
+        nameLabel.snp.makeConstraints { make in
+            make.leading.equalTo(iconImageView.snp.trailing).offset(19)
+            make.top.equalTo(iconImageView.snp.top)
+            make.height.equalTo(27)
+            
         }
-        priceLabel.snp.makeConstraints {
-            $0.leading.equalTo(nameLabel)
-            $0.top.equalTo(nameLabel.snp.bottom).offset(4)
+        
+        priceLabel.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(25)
+            make.top.equalTo(iconImageView.snp.top)
+            make.height.equalTo(nameLabel.snp.height)
         }
-        changeLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(16)
-            $0.centerY.equalToSuperview()
+        
+        percentLabel.snp.makeConstraints { make in
+            make.trailing.equalTo(priceLabel.snp.trailing)
+            make.top.equalTo(priceLabel.snp.bottom).offset(3)
+            make.height.equalTo(21)
+        }
+        
+        changeLabel.snp.makeConstraints { make in
+            make.trailing.equalTo(percentLabel.snp.trailing).offset(-45)
+            make.top.equalTo(priceLabel.snp.bottom).offset(7)
+            make.size.equalTo(12)
+        }
+        
+        symbolLabel.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel.snp.bottom).offset(3)
+            make.leading.equalTo(nameLabel.snp.leading)
+            make.height.equalTo(21)
         }
     }
+}
+
+#Preview {
+    HomeViewController()
 }

@@ -125,6 +125,7 @@ class HomeViewController: UIViewController {
         
         button.tintColor = .black
         button.imageView?.contentMode = .scaleAspectFit
+
         
         return button
     }()
@@ -166,20 +167,43 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
 
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return indexPath.row == 0 ? 50 : 70
+        return 70
     }
     
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        headerView.backgroundColor = .background
+        
+        
         let label = UILabel()
-        label.text = "Секция \(section)"
-        label.backgroundColor = .systemGray6
-        label.font = .boldSystemFont(ofSize: 18)
-        return label
+        label.text = "Tranding"
+        label.backgroundColor = .background
+        label.font = UIFont(name: "Poppins-SemiBold", size: 20)
+        headerView.addSubview(label)
+        
+        let button = UIButton()
+        button.setImage(UIImage(named: "sortIcon"), for: .normal)
+        headerView.addSubview(button)
+        
+        label.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(25)
+            make.top.equalToSuperview().offset(24)
+            make.height.equalTo(30)
+        }
+        
+        button.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-25)
+            make.top.equalToSuperview().offset(30)
+            make.height.equalTo(24)
+            make.width.equalTo(24)
+        }
+        
+        return headerView
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 44
+        return 70
     }
 
 
@@ -218,10 +242,10 @@ extension HomeViewController {
     func setupUITableView() {
         trendingTableView.delegate = self
         trendingTableView.dataSource = self
-
-        trendingTableView.register(TrendingHeaderCell.self, forCellReuseIdentifier: "TrendingHeaderCell")
         trendingTableView.register(CryptoItemCell.self, forCellReuseIdentifier: "CryptoItemCell")
-
+        if #available(iOS 15.0, *) {
+            trendingTableView.sectionHeaderTopPadding = 0
+        }
     }
     
 
@@ -290,13 +314,13 @@ extension HomeViewController {
 
         updateButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(16)
-            make.leading.equalToSuperview().inset(-15)
+            make.leading.equalToSuperview().inset(-60)
             make.height.equalTo(27)
         }
 
         logoutButton.snp.makeConstraints { make in
             make.top.equalTo(updateButton.snp.bottom).offset(16)
-            make.leading.equalToSuperview().inset(-15)
+            make.leading.equalTo(updateButton.snp.leading)
             make.bottom.equalToSuperview().inset(16)
             make.height.equalTo(27)
         }
