@@ -3,9 +3,13 @@ import SnapKit
 
 class HomeViewController: UIViewController {
     
+    // MARK: - Private Properties
+    
     private let viewModel = HomeViewModel()
     private var isExpanded = false
     private var isAnimatingScroll = false
+    private var isSortAscending = true
+    private weak var sortButton: UIButton?
     
     // MARK: - UI Elements
     
@@ -15,8 +19,6 @@ class HomeViewController: UIViewController {
         let blurEffect = UIBlurEffect(style: .light)
         let view = UIVisualEffectView(effect: blurEffect)
         view.alpha = 0
-        //view.layer.cornerRadius = 20
-        view.clipsToBounds = true
         return view
     }()
     
@@ -58,12 +60,6 @@ class HomeViewController: UIViewController {
         label.font = UIFont(name: "Poppins-SemiBold", size: 18)
         label.textColor = .black
         return label
-    }()
-    
-    let sortButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: "sortIcon"), for: .normal)
-        return button
     }()
     
     let trendingTableView: UITableView = {
@@ -162,6 +158,9 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         
         let button = UIButton()
         button.setImage(UIImage(named: "sortIcon"), for: .normal)
+        button.addTarget(self, action: #selector(sortButtonTapped(_:)), for: .touchUpInside)
+        self.sortButton = button
+        button.transform = isSortAscending ? .identity : CGAffineTransform(rotationAngle: .pi)
         headerView.addSubview(button)
         
         label.snp.makeConstraints { make in
@@ -286,12 +285,19 @@ extension HomeViewController {
     }
 }
 
-//MARK: Refresh Method
+//MARK: Coin Sort Method
 
 extension HomeViewController {
     
-    
-    
+    @objc private func sortButtonTapped(_ sender: UIButton) {
+        isSortAscending.toggle()
+        let order: HomeViewModel.SortOrder = isSortAscending ? .priceChangeAsc : .priceChangeDesc
+        viewModel.sort(by: order)
+        
+        UIView.animate(withDuration: 0.2) {
+            sender.transform = self.isSortAscending ? .identity : CGAffineTransform(rotationAngle: .pi)
+        }
+    }
 }
 
 
