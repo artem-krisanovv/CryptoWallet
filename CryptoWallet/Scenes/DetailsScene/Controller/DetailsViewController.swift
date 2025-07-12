@@ -2,11 +2,36 @@ import UIKit
 import SnapKit
 
 class CryptoDetailViewController: UIViewController {
+    
+    // MARK: - Private Properties
+    
+    private let crypto: Crypto
+    
+    // MARK: - Initialization
+    
+    init(crypto: Crypto) {
+        self.crypto = crypto
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        setupUI()
+        setupConstraints()
+        configureUI()
+    }
+    
     // MARK: - UI Elements
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ethereum (ETH)"
         label.font = UIFont(name: "Poppins-Regular", size: 14)
         label.textColor = .black
         label.textAlignment = .center
@@ -15,7 +40,6 @@ class CryptoDetailViewController: UIViewController {
     
     private let priceLabel: UILabel = {
         let label = UILabel()
-        label.text = "$32,128.80"
         label.font = UIFont(name: "Poppins-Regular", size: 28)
         label.textColor = .black
         return label
@@ -25,14 +49,12 @@ class CryptoDetailViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont(name: "Poppins-Regular", size: 14)
         label.textColor = .lightGray
-        label.text = "2.5%"
         return label
     }()
     
     private let changeLabel: UIImageView = {
         let label = UIImageView()
         label.contentMode = .scaleAspectFit
-        label.image = UIImage(named: "arrowUp")
         return label
     }()
     
@@ -62,7 +84,6 @@ class CryptoDetailViewController: UIViewController {
     
     private let marketCapValueLabel: UILabel = {
         let label = UILabel()
-        label.text = "$231,323"
         label.font = UIFont(name: "Poppins-SemiBold", size: 14)
         label.textColor = .black
         return label
@@ -78,7 +99,6 @@ class CryptoDetailViewController: UIViewController {
     
     private let supplyValueLabel: UILabel = {
         let label = UILabel()
-        label.text = "114.211 ETH"
         label.font = UIFont(name: "Poppins-SemiBold", size: 14)
         label.textColor = .black
         return label
@@ -98,9 +118,6 @@ class CryptoDetailViewController: UIViewController {
         }
     }
     
-    private lazy var segmentButtons: [UIButton] = []
-    private let segmentStack = UIStackView()
-    
     private let backButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "arrow.left"), for: .normal)
@@ -110,16 +127,11 @@ class CryptoDetailViewController: UIViewController {
         return button
     }()
     
+    private lazy var segmentButtons: [UIButton] = []
+    private let segmentStack = UIStackView()
+    
     private let customNavBar = UIView()
     
-    // MARK: - Lifecycle
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        setupUI()
-        setupConstraints()
-    }
 }
 
 // MARK: - Setup UI
@@ -227,6 +239,55 @@ extension CryptoDetailViewController {
     }
 }
 
+// MARK: - Configure UI
+
+extension CryptoDetailViewController {
+    private func configureUI() {
+        titleLabel.text = "\(crypto.name) (\(crypto.symbol.uppercased()))"
+        
+        if let price = crypto.metrics?.marketData?.priceUsd {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .currency
+            formatter.currencySymbol = "$"
+            formatter.maximumFractionDigits = 2
+            formatter.minimumFractionDigits = 2
+            formatter.locale = Locale(identifier: "en_US")
+            priceLabel.text = formatter.string(from: NSNumber(value: price))
+        } else {
+            priceLabel.text = "-"
+        }
+
+        if let change = crypto.metrics?.marketData?.percentChangeUsdLast24Hours {
+            percentLabel.text = String(format: "%.2f%%", abs(change))
+            percentLabel.textColor = .lightGray
+            changeLabel.image = change > 0 ? UIImage(named: "arrowUp") : UIImage(named: "arrowDown")
+        } else {
+            percentLabel.text = "-"
+            changeLabel.image = nil
+        }
+
+        if let marketCap = crypto.metrics?.marketData?.marketCapUsd {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.maximumFractionDigits = 0
+            formatter.locale = Locale(identifier: "en_US")
+            marketCapValueLabel.text = "$" + (formatter.string(from: NSNumber(value: marketCap)) ?? "-")
+        } else {
+            marketCapValueLabel.text = "-"
+        }
+
+        if let supply = crypto.metrics?.marketData?.circulatingSupply {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.maximumFractionDigits = 0
+            formatter.locale = Locale(identifier: "en_US")
+            supplyValueLabel.text = (formatter.string(from: NSNumber(value: supply)) ?? "-") + " \(crypto.symbol.uppercased())"
+        } else {
+            supplyValueLabel.text = "-"
+        }
+    }
+}
+
 // MARK: - Setup TimeSegment
 
 extension CryptoDetailViewController {
@@ -285,9 +346,5 @@ extension CryptoDetailViewController {
         }
     
     
-}
-
-#Preview {
-    CryptoDetailViewController()
 }
 

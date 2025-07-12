@@ -184,15 +184,14 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let detailsVC = CryptoDetailViewController()
-        tableView.deselectRow(at: indexPath, animated: false)
-        //detailsVC.configure(with: viewModel.cryptoList[indexPath.row])
+        let crypto = viewModel.cryptoList[indexPath.row]
+        let detailsVC = CryptoDetailViewController(crypto: crypto)
         navigationController?.pushViewController(detailsVC, animated: true)
     }
-
-
     
-   
+    
+    
+    
 
 }
 
