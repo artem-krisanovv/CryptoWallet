@@ -78,25 +78,7 @@ final class CustomNavigationBar: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupActions() {
-        moreButton.addTarget(self, action: #selector(togglePopup), for: .touchUpInside)
-    }
-    
-    @objc func togglePopup() {
-        if popupMenuView.isHidden {
-            popupMenuView.alpha = 0
-            popupMenuView.isHidden = false
-            UIView.animate(withDuration: 0.2) {
-                self.popupMenuView.alpha = 1
-            }
-        } else {
-            UIView.animate(withDuration: 0.2, animations: {
-                self.popupMenuView.alpha = 0
-            }) { _ in
-                self.popupMenuView.isHidden = true
-            }
-        }
-    }
+
 }
 
 // MARK: - Setup UI
@@ -104,23 +86,25 @@ final class CustomNavigationBar: UIView {
 extension CustomNavigationBar {
     
     func setupUI() {
-        backgroundColor = .clear
         
         [homeLabel, moreButton, popupMenuView].forEach { addSubview($0) }
         [updateButton, logoutButton, rocketImageView, trashImageView].forEach { popupMenuView.addSubview($0) }
+        
         setupConstraints()
+        addTargetToLogoutButton()
+        addTargetToMoreButton()
     }
     
     func setupConstraints() {
         
         homeLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(20)
-            make.centerY.equalToSuperview()
+            make.top.equalToSuperview().inset(32)
         }
         
         moreButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().inset(20)
-            make.centerY.equalToSuperview()
+            make.top.equalTo(homeLabel.snp.top)
             make.width.height.equalTo(48)
         }
         
@@ -156,7 +140,80 @@ extension CustomNavigationBar {
         }
         
         self.snp.makeConstraints { make in
-            make.height.equalTo(60)
+            make.height.equalTo(190)
         }
+    }
+}
+
+//MARK: LogoutButton Method
+
+extension CustomNavigationBar {
+    
+    func addTargetToLogoutButton() {
+        logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
+    }
+    
+    @objc private func logoutTapped() {
+        print("logout tapped")
+        AuthStorage.shared.logout()
+        
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            window.rootViewController = AuthViewController()
+            window.makeKeyAndVisible()
+        }
+    }
+}
+
+//MARK: MoreButton Method
+
+extension CustomNavigationBar {
+    
+    func addTargetToMoreButton() {
+        moreButton.addTarget(self, action: #selector(togglePopup), for: .touchUpInside)
+    }
+    
+    @objc func togglePopup() {
+        
+        self.superview?.bringSubviewToFront(self)
+        self.bringSubviewToFront(self.popupMenuView)
+        
+        if popupMenuView.isHidden {
+            popupMenuView.alpha = 0
+            popupMenuView.isHidden = false
+            UIView.animate(withDuration: 0.2) {
+                self.popupMenuView.alpha = 1
+            }
+        } else {
+            UIView.animate(withDuration: 0.2, animations: {
+                self.popupMenuView.alpha = 0
+            }) { _ in
+                self.popupMenuView.isHidden = true
+            }
+        }
+    }
+}
+
+//MARK: UpdateButton Method
+
+extension CustomNavigationBar {
+    
+    func addTargetToUpdateButton() {
+    }
+   
+}
+
+//MARK: HitTest Method
+
+extension CustomNavigationBar {
+    
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        for subview in [moreButton, updateButton, logoutButton] {
+            let convertedPoint = subview.convert(point, from: self)
+            if subview.bounds.contains(convertedPoint) {
+                return subview
+            }
+        }
+        return nil
     }
 }

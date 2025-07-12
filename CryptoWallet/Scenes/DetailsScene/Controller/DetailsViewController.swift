@@ -127,10 +127,6 @@ class CryptoDetailViewController: UIViewController {
 extension CryptoDetailViewController {
     private func setupUI() {
         view.backgroundColor = .background
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
-        
-        customNavBar.backgroundColor = .clear
         
         customNavBar.addSubview(backButton)
         
@@ -141,6 +137,7 @@ extension CryptoDetailViewController {
         }
         
         setupSegmentControl()
+        addTargetToBackButton()
     }
     
     private func setupConstraints() {
@@ -277,6 +274,11 @@ extension CryptoDetailViewController {
 //MARK: BackButton Method
 
 extension CryptoDetailViewController {
+    
+    func addTargetToBackButton() {
+        backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+    }
     
     @objc private func backTapped() {
             navigationController?.popViewController(animated: true)

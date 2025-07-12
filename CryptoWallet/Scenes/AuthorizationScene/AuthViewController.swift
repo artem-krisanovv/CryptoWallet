@@ -3,7 +3,7 @@ import SnapKit
 
 class AuthViewController: UIViewController {
     
-    var viewModel: AuthViewModel!
+    var viewModel: AuthViewModel = AuthViewModel()
     
     // MARK: - UI Elements
     
@@ -38,6 +38,7 @@ class AuthViewController: UIViewController {
         textField.font = UIFont(name: "Poppins-Regular", size: 15)
         textField.backgroundColor = .white
         textField.layer.cornerRadius = 25
+        textField.isSecureTextEntry = true
         
         let iconContainer = UIView()
         let iconImageView = UIImageView()
@@ -115,6 +116,7 @@ extension AuthViewController {
         }
         
         setupConstraints()
+        addTargetToLoginButton()
     }
     
     func setupConstraints() {
@@ -165,6 +167,27 @@ extension AuthViewController {
             make.leading.trailing.equalToSuperview().inset(25)
             make.height.equalTo(55)
             
+        }
+    }
+}
+
+//MARK: Authorization Button Method
+
+extension AuthViewController {
+    
+    func addTargetToLoginButton() {
+        loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
+    }
+    
+    @objc private func loginTapped() {
+        let username = usernameTextField.text ?? ""
+        let password = passwordTextField.text ?? ""
+        if viewModel.login(username: username, password: password) {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                window.rootViewController = TabBarController()
+                window.makeKeyAndVisible()
+            }
         }
     }
 }

@@ -1,21 +1,17 @@
 import Foundation
 
 final class AuthStorage {
-
+    private let isAuthorizedKey = "isAuthorized"
     static let shared = AuthStorage()
+    
     private init() {}
 
-    private let key = "isAuthorized"
-
     var isAuthorized: Bool {
-        return UserDefaults.standard.bool(forKey: key)
-    }
-
-    func login() {
-        UserDefaults.standard.set(true, forKey: key)
+        get { UserDefaults.standard.bool(forKey: isAuthorizedKey) }
+        set { UserDefaults.standard.set(newValue, forKey: isAuthorizedKey) }
     }
 
     func logout() {
-        UserDefaults.standard.set(false, forKey: key)
+        isAuthorized = false
     }
 }

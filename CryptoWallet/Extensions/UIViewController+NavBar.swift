@@ -14,7 +14,7 @@ extension UIViewController {
         }
         
         if showsRightButton {
-            navBar.setupActions()
+            navBar.addTargetToMoreButton()
             navBar.moreButton.addAction(UIAction { _ in
                 onRightButtonTap?()
             }, for: .touchUpInside)

@@ -3,7 +3,7 @@ import SnapKit
 
 class HomeViewController: UIViewController {
     
-    var viewModel: HomeViewModel!
+    var viewModel = HomeViewModel()
     var isExpanded = false
     var isAnimatingScroll = false
     
@@ -80,7 +80,6 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel = HomeViewModel()
         setupUI()
         
     }
@@ -230,18 +229,15 @@ extension HomeViewController {
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
     }
 }
+
+//MARK: Refresh Method
+
+extension HomeViewController {
+    
+}
+
 
 #Preview {
     HomeViewController()
