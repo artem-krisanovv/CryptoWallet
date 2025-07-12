@@ -65,6 +65,10 @@ final class CustomNavigationBar: UIView {
         return imageView
     }()
     
+    // MARK: - Update Closure
+    
+    var onUpdateTapped: (() -> Void)?
+    
     // MARK: - Init
     
     init(title: String, showsRightButton: Bool = true) {
@@ -93,13 +97,14 @@ extension CustomNavigationBar {
         setupConstraints()
         addTargetToLogoutButton()
         addTargetToMoreButton()
+        addTargetToUpdateButton()
     }
     
     func setupConstraints() {
         
         homeLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(20)
-            make.top.equalToSuperview().inset(32)
+            make.top.equalToSuperview()
         }
         
         moreButton.snp.makeConstraints { make in
@@ -199,8 +204,18 @@ extension CustomNavigationBar {
 extension CustomNavigationBar {
     
     func addTargetToUpdateButton() {
+        updateButton.addTarget(self, action: #selector(updateTapped), for: .touchUpInside)
     }
-   
+    
+    @objc private func updateTapped() {
+        UIView.animate(withDuration: 0.2, animations: {
+            self.popupMenuView.alpha = 0
+        }) { _ in
+            self.popupMenuView.isHidden = true
+        }
+        onUpdateTapped?()
+    }
+    
 }
 
 //MARK: HitTest Method

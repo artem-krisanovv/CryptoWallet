@@ -9,7 +9,6 @@ final class AppRouter {
     
     func start(in window: UIWindow?) {
         self.window = window
-        
         if AuthStorage.shared.isAuthorized {
             showCryptoList()
         } else {

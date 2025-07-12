@@ -47,19 +47,34 @@ class CryptoItemCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    func configure(with model: CryptoModel) {
-        contentView.backgroundColor = .background
-        iconImageView.image = UIImage(named: model.iconName)
-        nameLabel.text = "\(model.name)"
-        priceLabel.text = "$\(model.price)"
-        percentLabel.text = "\(model.priceChange)%"
-        symbolLabel.text = "\(model.symbol)"
-        changeLabel.image = model.priceChange >= 0 ? UIImage(named: "arrowUp") : UIImage(named: "arrowDown")
+    
+    func configure(with crypto: Crypto) {
+        nameLabel.text = crypto.name
+        symbolLabel.text = crypto.symbol.uppercased()
         
+        if let price = crypto.metrics?.marketData?.priceUsd {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .currency
+            formatter.currencySymbol = "$"
+            formatter.maximumFractionDigits = 2
+            formatter.minimumFractionDigits = 2
+            formatter.locale = Locale(identifier: "en_US")
+            
+            priceLabel.text = formatter.string(from: NSNumber(value: price))
+        } else {
+            priceLabel.text = "-"
+        }
+        
+        if let change = crypto.metrics?.marketData?.percentChangeUsdLast24Hours {
+            percentLabel.text = String(format: "%.2f%%", abs(change))
+            changeLabel.image = change > 0 ? UIImage(named: "arrowUp") : UIImage(named: "arrowDown")
+        }
+        iconImageView.image = UIImage(named: crypto.symbol.lowercased())
     }
-
+    
     private func setupUI() {
+        backgroundColor = .background
+        
         [iconImageView, nameLabel, priceLabel, changeLabel, percentLabel, symbolLabel].forEach {
             contentView.addSubview($0)
         }
@@ -90,7 +105,7 @@ class CryptoItemCell: UITableViewCell {
         }
         
         changeLabel.snp.makeConstraints { make in
-            make.trailing.equalTo(percentLabel.snp.trailing).offset(-45)
+            make.trailing.equalTo(percentLabel.snp.leading).offset(-6)
             make.top.equalTo(priceLabel.snp.bottom).offset(7)
             make.size.equalTo(12)
         }

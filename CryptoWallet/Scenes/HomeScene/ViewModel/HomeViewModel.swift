@@ -1,26 +1,51 @@
 import Foundation
 
 class HomeViewModel {
-    var cryptoList: [CryptoModel] = [
-        CryptoModel(name: "Bitcoin", symbol: "BTC", price: "63,500.05", priceChange: -2.5, iconName: "bitcoin"),
-        CryptoModel(name: "Ethereum", symbol: "ETH", price: "3,300.55", priceChange: +1.2, iconName: "neo"),
-        CryptoModel(name: "Bitcoin", symbol: "BTC", price: "63,500.05", priceChange: -2.5, iconName: "bitcoin"),
-        CryptoModel(name: "Ethereum", symbol: "ETH", price: "3,300.55", priceChange: +1.2, iconName: "neo"),
-        CryptoModel(name: "Bitcoin", symbol: "BTC", price: "63,500.05", priceChange: -2.5, iconName: "bitcoin"),
-        CryptoModel(name: "Ethereum", symbol: "ETH", price: "3,300.55", priceChange: +1.2, iconName: "neo"),
-        CryptoModel(name: "Bitcoin", symbol: "BTC", price: "63,500.05", priceChange: -2.5, iconName: "bitcoin"),
-        CryptoModel(name: "Ethereum", symbol: "ETH", price: "3,300.55", priceChange: +1.2, iconName: "neo"),
-        CryptoModel(name: "Bitcoin", symbol: "BTC", price: "63,500.05", priceChange: -2.5, iconName: "bitcoin"),
-        CryptoModel(name: "Ethereum", symbol: "ETH", price: "3,300.55", priceChange: +1.2, iconName: "neo"),
-        CryptoModel(name: "Bitcoin", symbol: "BTC", price: "63,500.05", priceChange: -2.5, iconName: "bitcoin"),
-        CryptoModel(name: "Ethereum", symbol: "ETH", price: "3,300.55", priceChange: +1.2, iconName: "neo"),
-        CryptoModel(name: "Bitcoin", symbol: "BTC", price: "63,500.05", priceChange: -2.5, iconName: "bitcoin"),
-        CryptoModel(name: "Ethereum", symbol: "ETH", price: "3,300.55", priceChange: +1.2, iconName: "neo"),
-        CryptoModel(name: "Bitcoin", symbol: "BTC", price: "63,500.05", priceChange: -2.5, iconName: "bitcoin"),
-        CryptoModel(name: "Ethereum", symbol: "ETH", price: "3,300.55", priceChange: +1.2, iconName: "neo")
-        
-    ]
+    
+    private(set) var cryptoList: [Crypto] = []
+    private(set) var isLoading: Bool = false
+    
+    var onUpdate: (() -> Void)?
+
+    // MARK: - Loading Data
+
+    func loadAssets() {
+        isLoading = true
+        onUpdate?()
+        NetworkService.shared.fetchAssets { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let assets):
+                    self?.cryptoList = assets
+                case .failure:
+                    self?.cryptoList = []
+                }
+                self?.onUpdate?()
+            }
+        }
+    }
+
+    // MARK: - Sort
+
+    enum SortOrder {
+        case priceChangeAsc
+        case priceChangeDesc
+    }
+
+    func sort(by order: SortOrder) {
+        switch order {
+        case .priceChangeAsc:
+            cryptoList.sort {
+                ($0.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0) <
+                ($1.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0)
+            }
+        case .priceChangeDesc:
+            cryptoList.sort {
+                ($0.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0) >
+                ($1.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0)
+            }
+        }
+        onUpdate?()
+    }
 }
-
-
-

@@ -3,11 +3,22 @@ import SnapKit
 
 class HomeViewController: UIViewController {
     
-    var viewModel = HomeViewModel()
-    var isExpanded = false
-    var isAnimatingScroll = false
+    private let viewModel = HomeViewModel()
+    private var isExpanded = false
+    private var isAnimatingScroll = false
     
     // MARK: - UI Elements
+    
+    private var navBar: CustomNavigationBar?
+    
+    private let blurView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .light)
+        let view = UIVisualEffectView(effect: blurEffect)
+        view.alpha = 0
+        //view.layer.cornerRadius = 20
+        view.clipsToBounds = true
+        return view
+    }()
     
     let affiliateLabel: UILabel = {
         let label = UILabel()
@@ -64,25 +75,54 @@ class HomeViewController: UIViewController {
         tableView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return tableView
     }()
+    
+    private let spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: .large)
+        spinner.hidesWhenStopped = true
+        spinner.color = .gray
+        return spinner
+    }()
 
-    
-    
-    
-   
-    
-    
-    
-    
-    
-    
     
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        bindViewModel()
         setupUI()
-        
+        viewModel.loadAssets()
     }
+    
+    // MARK: - Private Method
+    
+    private func bindViewModel() {
+        viewModel.onUpdate = { [weak self] in
+            DispatchQueue.main.async {
+                self?.trendingTableView.reloadData()
+                if self?.viewModel.isLoading == true {
+                    self?.spinner.startAnimating()
+                    self?.showBlur()
+                } else {
+                    self?.spinner.stopAnimating()
+                    self?.hideBlur()
+                }
+            }
+        }
+    }
+    
+    private func showBlur() {
+        UIView.animate(withDuration: 0.2) {
+            self.blurView.alpha = 1
+        }
+    }
+    
+    private func hideBlur() {
+        UIView.animate(withDuration: 0.2) {
+            self.blurView.alpha = 0
+        }
+    }
+    
+    
 }
 
 // MARK: - Setup TableView
@@ -100,7 +140,6 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CryptoItemCell", for: indexPath) as! CryptoItemCell
         let crypto = viewModel.cryptoList[indexPath.row]
         cell.configure(with: crypto)
-        cell.selectionStyle = .none
         return cell
     }
 
@@ -147,6 +186,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let detailsVC = CryptoDetailViewController()
+        tableView.deselectRow(at: indexPath, animated: false)
         //detailsVC.configure(with: viewModel.cryptoList[indexPath.row])
         navigationController?.pushViewController(detailsVC, animated: true)
     }
@@ -164,13 +204,18 @@ extension HomeViewController {
         view.backgroundColor = .secondBackground
         navigationController?.setNavigationBarHidden(true, animated: false)
         
-        [shadowImageView, illustrationImageView, affiliateLabel, learnMoreButton, trendingTableView].forEach {
+        [shadowImageView, illustrationImageView, affiliateLabel, learnMoreButton, trendingTableView, blurView, spinner].forEach {
             view.addSubview($0)
         }
         
-        addCustomNavigationBar(title: "Home", showsRightButton: true) {
-            print("More button tapped")
+        navBar = addCustomNavigationBar(title: "Home", showsRightButton: true) {
+            print("asas")
         }
+        navBar?.onUpdateTapped = { [weak self] in
+            print("Update tapped")
+            self?.viewModel.loadAssets()
+        }
+        
         setupUITableView()
         setupConstraints()
     }
@@ -229,12 +274,23 @@ extension HomeViewController {
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        
+        spinner.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            
+        }
+        
+        blurView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 }
 
 //MARK: Refresh Method
 
 extension HomeViewController {
+    
+    
     
 }
 

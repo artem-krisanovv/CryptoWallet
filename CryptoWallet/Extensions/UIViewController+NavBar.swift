@@ -3,7 +3,7 @@ import SnapKit
 
 extension UIViewController {
     
-    func addCustomNavigationBar(title: String, showsRightButton: Bool = true, onRightButtonTap: (() -> Void)? = nil) {
+    func addCustomNavigationBar(title: String, showsRightButton: Bool = true, onRightButtonTap: (() -> Void)? = nil) -> CustomNavigationBar {
         
         let navBar = CustomNavigationBar(title: title, showsRightButton: showsRightButton)
         view.addSubview(navBar)
@@ -19,5 +19,6 @@ extension UIViewController {
                 onRightButtonTap?()
             }, for: .touchUpInside)
         }
+        return navBar
     }
 }
