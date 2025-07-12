@@ -6,6 +6,11 @@ class CryptoDetailViewController: UIViewController {
     // MARK: - Private Properties
     
     private let crypto: Crypto
+    private var selectedFilter: TimeFilter = .h24 {
+        didSet {
+            updateSegmentButtons()
+        }
+    }
     
     // MARK: - Initialization
     
@@ -26,6 +31,7 @@ class CryptoDetailViewController: UIViewController {
         setupUI()
         setupConstraints()
         configureUI()
+        updatePriceChangeUI()
     }
     
     // MARK: - UI Elements
@@ -110,13 +116,6 @@ class CryptoDetailViewController: UIViewController {
         view.layer.cornerRadius = 27
         return view
     }()
-    
-    
-    private var selectedFilter: TimeFilter = .h24 {
-        didSet {
-            updateSegmentButtons()
-        }
-    }
     
     private let backButton: UIButton = {
         let button = UIButton(type: .system)
@@ -313,9 +312,38 @@ extension CryptoDetailViewController {
         updateSegmentButtons()
     }
     
+    private func updatePriceChangeUI() {
+        let marketData = crypto.metrics?.marketData
+        var change: Double?
+        
+        switch selectedFilter {
+        case .h24:
+            change = marketData?.percentChangeUsdLast24Hours
+        case .w1:
+            change = marketData?.percentChangeUsdLast7Days
+        case .y1:
+            change = marketData?.percentChangeUsdLast1Year
+        case .all:
+            change = marketData?.percentChangeUsdLast30Days
+        case .point:
+            change = marketData?.percentChangeUsdLast1Hour
+        }
+        
+        if let change = change {
+            percentLabel.text = String(format: "%.2f%%", abs(change))
+            percentLabel.textColor = .lightGray
+            changeLabel.image = change > 0 ? UIImage(named: "arrowUp") : UIImage(named: "arrowDown")
+        } else {
+            percentLabel.text = "-"
+            changeLabel.image = nil
+        }
+    }
+    
     @objc private func segmentTapped(_ sender: UIButton) {
         let selected = TimeFilter.allCases[sender.tag]
         selectedFilter = selected
+        updateSegmentButtons()
+        updatePriceChangeUI()
     }
     
     private func updateSegmentButtons() {

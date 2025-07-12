@@ -184,6 +184,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         let crypto = viewModel.cryptoList[indexPath.row]
         let detailsVC = CryptoDetailViewController(crypto: crypto)
         navigationController?.pushViewController(detailsVC, animated: true)
@@ -207,7 +208,7 @@ extension HomeViewController {
         }
         
         navBar = addCustomNavigationBar(title: "Home", showsRightButton: true) {
-            print("asas")
+            print("tap morebtn")
         }
         navBar?.onUpdateTapped = { [weak self] in
             print("Update tapped")

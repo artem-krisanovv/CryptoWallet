@@ -159,7 +159,6 @@ extension CustomNavigationBar {
     }
     
     @objc private func logoutTapped() {
-        print("logout tapped")
         AuthStorage.shared.logout()
         
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
