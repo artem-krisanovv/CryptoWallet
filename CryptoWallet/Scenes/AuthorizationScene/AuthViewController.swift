@@ -175,8 +175,31 @@ extension AuthViewController {
 
 extension AuthViewController {
     
-    func addTargetToLoginButton() {
+    private func addTargetToLoginButton() {
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
+    }
+    
+    private func showLoginErrorAlert() {
+        let alert = UIAlertController(
+            title: "Ошибка",
+            message: "Введены неправильный логин или пароль",
+            preferredStyle: .alert
+        )
+
+        let retryAction = UIAlertAction(
+            title: "Повторить",
+            style: .default,
+            handler: nil
+        )
+
+        let cancelAction = UIAlertAction(title: "Отменить", style: .destructive) { [weak self] _ in
+            self?.usernameTextField.text = ""
+            self?.passwordTextField.text = ""
+        }
+
+        alert.addAction(retryAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true, completion: nil)
     }
     
     @objc private func loginTapped() {
@@ -188,6 +211,8 @@ extension AuthViewController {
                 window.rootViewController = TabBarController()
                 window.makeKeyAndVisible()
             }
+        } else {
+            showLoginErrorAlert()
         }
     }
 }
