@@ -27,27 +27,27 @@ CryptoWallet — это начальное iOS-приложение, котор�
 <table>
   <tr>
     <td align="center">
-      <img src="CryptoWallet/Resources/Screenshots/MoreButton.png" alt="More Button" width="260"/><br>
+      <img src="CryptoWallet/Resources/Screenshots/MoreButton.png" alt="More Button" width="300"/><br>
       <b>More Button</b>
     </td>
     <td align="center">
-      <img src="CryptoWallet/Resources/Screenshots/SegmenterAndBackButton.png" alt="Segmenter and Back Button" width="260"/><br>
+      <img src="CryptoWallet/Resources/Screenshots/SegmenterAndBackButton.png" alt="Segmenter and Back Button" width="300"/><br>
       <b>Segmenter and Back Button</b>
     </td>
   </tr>
   <tr>
     <td align="center">
-      <img src="CryptoWallet/Resources/Screenshots/FilterButton.png" alt="Filter Button" width="260"/><br>
+      <img src="CryptoWallet/Resources/Screenshots/FilterButton.png" alt="Filter Button" width="300"/><br>
       <b>Filter Button</b>
     </td>
     <td align="center">
-      <img src="CryptoWallet/Resources/Screenshots/TabBar.png" alt="TabBar" width="260"/><br>
+      <img src="CryptoWallet/Resources/Screenshots/TabBar.png" alt="TabBar" width="300"/><br>
       <b>TabBar</b>
     </td>
   </tr>
   <tr>
     <td align="center" colspan="2">
-      <img src="CryptoWallet/Resources/Screenshots/TextField.png" alt="TextField" width="260"/><br>
+      <img src="CryptoWallet/Resources/Screenshots/TextField.png" alt="TextField" width="300"/><br>
       <b>TextField</b>
     </td>
   </tr>
