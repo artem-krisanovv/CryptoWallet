@@ -317,6 +317,8 @@ extension CryptoDetailViewController {
         var change: Double?
         
         switch selectedFilter {
+        case .h1:
+            change = marketData?.percentChangeUsdLast1Hour
         case .h24:
             change = marketData?.percentChangeUsdLast24Hours
         case .w1:
@@ -325,8 +327,6 @@ extension CryptoDetailViewController {
             change = marketData?.percentChangeUsdLast1Year
         case .all:
             change = marketData?.percentChangeUsdLast30Days
-        case .point:
-            change = marketData?.percentChangeUsdLast1Hour
         }
         
         if let change = change {

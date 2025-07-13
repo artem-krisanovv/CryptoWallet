@@ -36,7 +36,7 @@ struct MarketData: Codable {
         case percentChangeUsdLast7Days = "percent_change_usd_last_7_days"
         case percentChangeUsdLast30Days = "percent_change_usd_last_30_days"
         case percentChangeUsdLast1Year = "percent_change_usd_last_1_year"
-        case marketCapUsd = "market_cap_usd"
-        case circulatingSupply = "circulating_supply"
+        case marketCapUsd = "current_marketcap_usd"
+        case circulatingSupply = "circulating"
     }
 }

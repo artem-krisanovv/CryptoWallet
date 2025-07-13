@@ -37,15 +37,18 @@ class HomeViewModel {
         switch order {
         case .priceChangeAsc:
             cryptoList.sort {
-                ($0.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0) <
+                ($0.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0) >
                 ($1.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0)
             }
         case .priceChangeDesc:
             cryptoList.sort {
-                ($0.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0) >
+                ($0.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0) <
                 ($1.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0)
             }
         }
         onUpdate?()
     }
 }
+
+
+
