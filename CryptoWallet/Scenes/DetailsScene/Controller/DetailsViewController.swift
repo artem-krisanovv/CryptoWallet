@@ -18,7 +18,7 @@ class CryptoDetailViewController: UIViewController {
         self.crypto = crypto
         super.init(nibName: nil, bundle: nil)
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -64,7 +64,7 @@ class CryptoDetailViewController: UIViewController {
         return label
     }()
     
-    let illustrationBackgroundView: UIImageView = {
+    private let illustrationBackgroundView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .backgroundColorForDetailScreen
         imageView.layer.cornerRadius = 40
@@ -140,19 +140,27 @@ extension CryptoDetailViewController {
         view.backgroundColor = .background
         
         customNavBar.addSubview(backButton)
-        
-        [customNavBar, illustrationBackgroundView, titleLabel, priceLabel, percentLabel, changeLabel,
-         marketStatsTitle, marketCapLabel, marketCapValueLabel,
-         supplyLabel, supplyValueLabel, segmentBackgroundView, segmentStack].forEach {
-            view.addSubview($0)
-        }
+        [
+            customNavBar,
+            illustrationBackgroundView,
+            titleLabel,
+            priceLabel,
+            percentLabel,
+            changeLabel,
+            marketStatsTitle,
+            marketCapLabel,
+            marketCapValueLabel,
+            supplyLabel,
+            supplyValueLabel,
+            segmentBackgroundView,
+            segmentStack
+        ].forEach { view.addSubview($0) }
         
         setupSegmentControl()
         addTargetToBackButton()
     }
     
     private func setupConstraints() {
-        
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(74)
@@ -255,7 +263,7 @@ extension CryptoDetailViewController {
         } else {
             priceLabel.text = "-"
         }
-
+        
         if let change = crypto.metrics?.marketData?.percentChangeUsdLast24Hours {
             percentLabel.text = String(format: "%.2f%%", abs(change))
             percentLabel.textColor = .lightGray
@@ -264,7 +272,7 @@ extension CryptoDetailViewController {
             percentLabel.text = "-"
             changeLabel.image = nil
         }
-
+        
         if let marketCap = crypto.metrics?.marketData?.marketCapUsd {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
@@ -274,7 +282,7 @@ extension CryptoDetailViewController {
         } else {
             marketCapValueLabel.text = "-"
         }
-
+        
         if let supply = crypto.metrics?.marketData?.circulatingSupply {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
@@ -290,7 +298,6 @@ extension CryptoDetailViewController {
 // MARK: - Setup TimeSegment
 
 extension CryptoDetailViewController {
-    
     private func setupSegmentControl() {
         segmentStack.axis = .horizontal
         segmentStack.alignment = .fill
@@ -299,16 +306,17 @@ extension CryptoDetailViewController {
         
         for filter in TimeFilter.allCases {
             let button = UIButton(type: .system)
+            
             button.setTitle(filter.rawValue, for: .normal)
             button.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 14)
             button.layer.cornerRadius = 25
             button.clipsToBounds = true
             button.tag = segmentButtons.count
             button.addTarget(self, action: #selector(segmentTapped(_:)), for: .touchUpInside)
+            
             segmentButtons.append(button)
             segmentStack.addArrangedSubview(button)
         }
-        
         updateSegmentButtons()
     }
     
@@ -350,6 +358,7 @@ extension CryptoDetailViewController {
         for (index, button) in segmentButtons.enumerated() {
             let filter = TimeFilter.allCases[index]
             let isSelected = (filter == selectedFilter)
+            
             button.backgroundColor = isSelected ? .white : .backgroundColorForSegmenter
             button.setTitleColor(isSelected ? .black : UIColor.black.withAlphaComponent(0.4), for: .normal)
             button.layer.shadowColor = isSelected ? UIColor.black.cgColor : nil
@@ -363,16 +372,13 @@ extension CryptoDetailViewController {
 //MARK: BackButton Method
 
 extension CryptoDetailViewController {
-    
     func addTargetToBackButton() {
         backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     @objc private func backTapped() {
-            navigationController?.popViewController(animated: true)
-        }
-    
-    
+        navigationController?.popViewController(animated: true)
+    }
 }
 

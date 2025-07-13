@@ -6,12 +6,13 @@ class HomeViewModel {
     private(set) var isLoading: Bool = false
     
     var onUpdate: (() -> Void)?
-
+    
     // MARK: - Loading Data
-
+    
     func loadAssets() {
         isLoading = true
         onUpdate?()
+        
         NetworkService.shared.fetchAssets { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
@@ -25,14 +26,14 @@ class HomeViewModel {
             }
         }
     }
-
-    // MARK: - Sort
-
+    
+    // MARK: - Sort Func
+    
     enum SortOrder {
         case priceChangeAsc
         case priceChangeDesc
     }
-
+    
     func sort(by order: SortOrder) {
         switch order {
         case .priceChangeAsc:

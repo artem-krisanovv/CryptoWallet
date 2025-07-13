@@ -13,7 +13,7 @@ struct Crypto: Codable {
 
 struct Metrics: Codable {
     let marketData: MarketData?
-
+    
     enum CodingKeys: String, CodingKey {
         case marketData = "market_data"
     }

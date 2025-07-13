@@ -11,6 +11,44 @@ class HomeViewController: UIViewController {
     private var isSortAscending = true
     private weak var sortButton: UIButton?
     
+    // MARK: - Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        bindViewModel()
+        setupUI()
+        viewModel.loadAssets()
+    }
+    
+    // MARK: - Private Method
+    
+    private func bindViewModel() {
+        viewModel.onUpdate = { [weak self] in
+            DispatchQueue.main.async {
+                self?.trendingTableView.reloadData()
+                if self?.viewModel.isLoading == true {
+                    self?.spinner.startAnimating()
+                    self?.showBlur()
+                } else {
+                    self?.spinner.stopAnimating()
+                    self?.hideBlur()
+                }
+            }
+        }
+    }
+    
+    private func showBlur() {
+        UIView.animate(withDuration: 0.2) {
+            self.blurView.alpha = 1
+        }
+    }
+    
+    private func hideBlur() {
+        UIView.animate(withDuration: 0.2) {
+            self.blurView.alpha = 0
+        }
+    }
+    
     // MARK: - UI Elements
     
     private var navBar: CustomNavigationBar?
@@ -78,47 +116,6 @@ class HomeViewController: UIViewController {
         spinner.color = .gray
         return spinner
     }()
-
-    
-    // MARK: - Lifecycle
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        bindViewModel()
-        setupUI()
-        viewModel.loadAssets()
-    }
-    
-    // MARK: - Private Method
-    
-    private func bindViewModel() {
-        viewModel.onUpdate = { [weak self] in
-            DispatchQueue.main.async {
-                self?.trendingTableView.reloadData()
-                if self?.viewModel.isLoading == true {
-                    self?.spinner.startAnimating()
-                    self?.showBlur()
-                } else {
-                    self?.spinner.stopAnimating()
-                    self?.hideBlur()
-                }
-            }
-        }
-    }
-    
-    private func showBlur() {
-        UIView.animate(withDuration: 0.2) {
-            self.blurView.alpha = 1
-        }
-    }
-    
-    private func hideBlur() {
-        UIView.animate(withDuration: 0.2) {
-            self.blurView.alpha = 0
-        }
-    }
-    
-    
 }
 
 // MARK: - Setup TableView
@@ -127,28 +124,25 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.cryptoList.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CryptoItemCell", for: indexPath) as! CryptoItemCell
         let crypto = viewModel.cryptoList[indexPath.row]
         cell.configure(with: crypto)
         return cell
     }
-
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
     
-    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
         headerView.backgroundColor = .background
-        
         
         let label = UILabel()
         label.text = "Tranding"
@@ -175,10 +169,9 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
             make.height.equalTo(24)
             make.width.equalTo(24)
         }
-        
         return headerView
     }
-
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 70
     }
@@ -189,11 +182,6 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         let detailsVC = CryptoDetailViewController(crypto: crypto)
         navigationController?.pushViewController(detailsVC, animated: true)
     }
-    
-    
-    
-    
-
 }
 
 // MARK: - Setup UI
@@ -202,23 +190,24 @@ extension HomeViewController {
     func setupUI() {
         view.backgroundColor = .secondBackground
         navigationController?.setNavigationBarHidden(true, animated: false)
+        [
+            shadowImageView,
+            illustrationImageView,
+            affiliateLabel,
+            learnMoreButton,
+            trendingTableView,
+            blurView,
+            spinner
+        ].forEach { view.addSubview($0) }
         
-        [shadowImageView, illustrationImageView, affiliateLabel, learnMoreButton, trendingTableView, blurView, spinner].forEach {
-            view.addSubview($0)
-        }
-        
-        navBar = addCustomNavigationBar(title: "Home", showsRightButton: true) {
-            print("tap morebtn")
-        }
+        navBar = addCustomNavigationBar(title: "Home", showsRightButton: true)
         navBar?.onUpdateTapped = { [weak self] in
-            print("Update tapped")
             self?.viewModel.loadAssets()
         }
         
         setupUITableView()
         setupConstraints()
     }
-    
     
     func setupUITableView() {
         trendingTableView.delegate = self
@@ -229,10 +218,7 @@ extension HomeViewController {
         }
     }
     
-
-    
     func setupConstraints() {
-        
         affiliateLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(126)
             make.leading.equalToSuperview().offset(25)
@@ -276,7 +262,6 @@ extension HomeViewController {
         
         spinner.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            
         }
         
         blurView.snp.makeConstraints { make in
@@ -288,7 +273,6 @@ extension HomeViewController {
 //MARK: Coin Sort Method
 
 extension HomeViewController {
-    
     @objc private func sortButtonTapped(_ sender: UIButton) {
         isSortAscending.toggle()
         let order: HomeViewModel.SortOrder = isSortAscending ? .priceChangeAsc : .priceChangeDesc
@@ -298,10 +282,4 @@ extension HomeViewController {
             sender.transform = self.isSortAscending ? .identity : CGAffineTransform(rotationAngle: .pi)
         }
     }
-}
-
-
-#Preview {
-    HomeViewController()
-    
 }

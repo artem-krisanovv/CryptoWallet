@@ -3,11 +3,20 @@ import SnapKit
 
 class AuthViewController: UIViewController {
     
+    // MARK: - Properties
+    
     var viewModel: AuthViewModel = AuthViewModel()
+    
+    // MARK: - Lifecycle
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+    }
     
     // MARK: - UI Elements
     
-    let usernameTextField: UITextField = {
+    private let usernameTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Username"
         textField.font = UIFont(name: "Poppins-Regular", size: 15)
@@ -28,11 +37,10 @@ class AuthViewController: UIViewController {
             make.center.equalToSuperview()
             make.width.height.equalTo(32)
         }
-        
         return textField
     }()
     
-    let passwordTextField: UITextField = {
+    private let passwordTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Password"
         textField.font = UIFont(name: "Poppins-Regular", size: 15)
@@ -58,7 +66,7 @@ class AuthViewController: UIViewController {
         return textField
     }()
     
-    let loginButton: UIButton = {
+    private let loginButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Login", for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -68,59 +76,55 @@ class AuthViewController: UIViewController {
         return button
     }()
     
-    let robotImageView: UIImageView = {
+    private let robotImageView: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "robotImage")
         image.contentMode = .scaleAspectFit
         return image
     }()
     
-    let mainBackgroundImageView: UIImageView = {
+    private let mainBackgroundImageView: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "mainBackgroundImage")
         image.contentMode = .scaleAspectFill
         return image
     }()
     
-    let lightBackgroundImageView: UIImageView = {
+    private let lightBackgroundImageView: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "lightBackgroundImage")
         image.contentMode = .scaleAspectFit
         return image
     }()
     
-    let shadowImageView: UIImageView = {
+    private let shadowImageView: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "shadowForAuthScene")
         image.contentMode = .scaleAspectFit
         return image
     }()
-    
-    // MARK: - Lifecycle
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupUI()
-    }
 }
 
 // MARK: - Setup UI
 
 extension AuthViewController {
-    
-    func setupUI() {
+    private func setupUI() {
         view.backgroundColor = .background
-        
-        [usernameTextField, passwordTextField, loginButton, lightBackgroundImageView, mainBackgroundImageView, shadowImageView, robotImageView].forEach {
-            view.addSubview($0)
-        }
+        [
+            usernameTextField,
+            passwordTextField,
+            loginButton,
+            lightBackgroundImageView,
+            mainBackgroundImageView,
+            shadowImageView,
+            robotImageView
+        ].forEach { view.addSubview($0) }
         
         setupConstraints()
         addTargetToLoginButton()
     }
     
-    func setupConstraints() {
-        
+    private func setupConstraints() {
         robotImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(63)
             make.leading.equalToSuperview().inset(64)
@@ -159,14 +163,12 @@ extension AuthViewController {
             make.top.equalTo(usernameTextField.snp.bottom).offset(15)
             make.leading.trailing.equalToSuperview().inset(25)
             make.height.equalTo(55)
-            
         }
         
         loginButton.snp.makeConstraints { make in
             make.top.equalTo(passwordTextField.snp.bottom).offset(25)
             make.leading.trailing.equalToSuperview().inset(25)
             make.height.equalTo(55)
-            
         }
     }
 }
@@ -174,7 +176,6 @@ extension AuthViewController {
 //MARK: Authorization Button Method
 
 extension AuthViewController {
-    
     private func addTargetToLoginButton() {
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
     }
@@ -185,18 +186,18 @@ extension AuthViewController {
             message: "Введены неправильный логин или пароль",
             preferredStyle: .alert
         )
-
+        
         let retryAction = UIAlertAction(
             title: "Повторить",
             style: .default,
             handler: nil
         )
-
+        
         let cancelAction = UIAlertAction(title: "Отменить", style: .destructive) { [weak self] _ in
             self?.usernameTextField.text = ""
             self?.passwordTextField.text = ""
         }
-
+        
         alert.addAction(retryAction)
         alert.addAction(cancelAction)
         present(alert, animated: true, completion: nil)
@@ -215,11 +216,6 @@ extension AuthViewController {
             showLoginErrorAlert()
         }
     }
-}
-
-
-#Preview {
-    AuthViewController()
 }
 
 
