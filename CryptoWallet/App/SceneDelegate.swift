@@ -9,9 +9,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         AppRouter.shared.start(in: window)
         self.window = window
-        
-        /*window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = TabBarController()
-        window?.makeKeyAndVisible()*/
     }
 }

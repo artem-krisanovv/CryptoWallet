@@ -3,6 +3,22 @@ import SnapKit
 
 final class CustomNavigationBar: UIView {
     
+    // MARK: - Update Closure
+    
+    var onUpdateTapped: (() -> Void)?
+    
+    // MARK: - Initialization
+    
+    init(title: String, showsRightButton: Bool = true) {
+        super.init(frame: .zero)
+        homeLabel.text = title
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - UI Elements
     
     let homeLabel: UILabel = {
@@ -43,7 +59,6 @@ final class CustomNavigationBar: UIView {
         return button
     }()
     
-    
     let logoutButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Выйти", for: .normal)
@@ -64,33 +79,12 @@ final class CustomNavigationBar: UIView {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-    
-    // MARK: - Update Closure
-    
-    var onUpdateTapped: (() -> Void)?
-    
-    // MARK: - Init
-    
-    init(title: String, showsRightButton: Bool = true) {
-        super.init(frame: .zero)
-        homeLabel.text = title
-        
-        setupUI()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-
 }
 
 // MARK: - Setup UI
 
 extension CustomNavigationBar {
-    
     func setupUI() {
-        
         [homeLabel, moreButton, popupMenuView].forEach { addSubview($0) }
         [updateButton, logoutButton, rocketImageView, trashImageView].forEach { popupMenuView.addSubview($0) }
         
@@ -101,7 +95,6 @@ extension CustomNavigationBar {
     }
     
     func setupConstraints() {
-        
         homeLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(20)
             make.top.equalToSuperview()
@@ -153,7 +146,6 @@ extension CustomNavigationBar {
 //MARK: LogoutButton Method
 
 extension CustomNavigationBar {
-    
     func addTargetToLogoutButton() {
         logoutButton.addTarget(self, action: #selector(logoutTapped), for: .touchUpInside)
     }
@@ -172,13 +164,19 @@ extension CustomNavigationBar {
 //MARK: MoreButton Method
 
 extension CustomNavigationBar {
-    
     func addTargetToMoreButton() {
         moreButton.addTarget(self, action: #selector(togglePopup), for: .touchUpInside)
     }
     
+    func moreButtonIsHidden() {
+        UIView.animate(withDuration: 0.2, animations: {
+            self.popupMenuView.alpha = 0
+        }) { _ in
+            self.popupMenuView.isHidden = true
+        }
+    }
+    
     @objc func togglePopup() {
-        
         self.superview?.bringSubviewToFront(self)
         self.bringSubviewToFront(self.popupMenuView)
         
@@ -189,11 +187,7 @@ extension CustomNavigationBar {
                 self.popupMenuView.alpha = 1
             }
         } else {
-            UIView.animate(withDuration: 0.2, animations: {
-                self.popupMenuView.alpha = 0
-            }) { _ in
-                self.popupMenuView.isHidden = true
-            }
+            moreButtonIsHidden()
         }
     }
 }
@@ -201,26 +195,19 @@ extension CustomNavigationBar {
 //MARK: UpdateButton Method
 
 extension CustomNavigationBar {
-    
     func addTargetToUpdateButton() {
         updateButton.addTarget(self, action: #selector(updateTapped), for: .touchUpInside)
     }
     
     @objc private func updateTapped() {
-        UIView.animate(withDuration: 0.2, animations: {
-            self.popupMenuView.alpha = 0
-        }) { _ in
-            self.popupMenuView.isHidden = true
-        }
+        moreButtonIsHidden()
         onUpdateTapped?()
     }
-    
 }
 
 //MARK: HitTest Method
 
 extension CustomNavigationBar {
-    
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         for subview in [moreButton, updateButton, logoutButton] {
             let convertedPoint = subview.convert(point, from: self)

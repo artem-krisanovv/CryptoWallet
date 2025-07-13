@@ -1,10 +1,10 @@
 import UIKit
 import SnapKit
 
+// MARK: - NavigationBar extension
+
 extension UIViewController {
-    
     func addCustomNavigationBar(title: String, showsRightButton: Bool = true, onRightButtonTap: (() -> Void)? = nil) -> CustomNavigationBar {
-        
         let navBar = CustomNavigationBar(title: title, showsRightButton: showsRightButton)
         view.addSubview(navBar)
         
