@@ -144,20 +144,16 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         let headerView = UIView()
         headerView.backgroundColor = .background
         
-        let label = UILabel()
-        label.text = "Tranding"
-        label.backgroundColor = .background
-        label.font = UIFont(name: "Poppins-SemiBold", size: 20)
-        headerView.addSubview(label)
-        
         let button = UIButton()
         button.setImage(UIImage(named: "sortIcon"), for: .normal)
         button.addTarget(self, action: #selector(sortButtonTapped(_:)), for: .touchUpInside)
         self.sortButton = button
         button.transform = isSortAscending ? .identity : CGAffineTransform(rotationAngle: .pi)
-        headerView.addSubview(button)
         
-        label.snp.makeConstraints { make in
+        headerView.addSubview(button)
+        headerView.addSubview(trendingLabel)
+        
+        trendingLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(25)
             make.top.equalToSuperview().offset(24)
             make.height.equalTo(30)

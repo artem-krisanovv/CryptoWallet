@@ -22,8 +22,7 @@ final class StubViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.systemGroupedBackground
-        setupNavBar()
+        setupUI()
     }
     
     // MARK: - UI Elements
@@ -45,6 +44,10 @@ final class StubViewController: UIViewController {
 // MARK: - Setup UI
 
 extension StubViewController {
+    private func setupUI() {
+        view.backgroundColor = .background
+        setupNavBar()
+    }
     private func setupNavBar() {
         view.addSubview(navBar)
         navBar.snp.makeConstraints { make in

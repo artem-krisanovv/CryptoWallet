@@ -23,6 +23,7 @@ class CryptoItemCell: UITableViewCell {
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Poppins-SemiBold", size: 18)
+        label.textColor = .black
         return label
     }()
     
@@ -36,6 +37,7 @@ class CryptoItemCell: UITableViewCell {
     private let priceLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont(name: "Poppins-SemiBold", size: 18)
+        label.textColor = .black
         return label
     }()
     
