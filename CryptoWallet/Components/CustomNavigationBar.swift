@@ -3,9 +3,11 @@ import SnapKit
 
 final class CustomNavigationBar: UIView {
     
-    // MARK: - Update Closure
+    // MARK: - Closure
     
     var onUpdateTapped: (() -> Void)?
+    var onMenuShown: (() -> Void)?
+    var onMenuHidden: (() -> Void)?
     
     // MARK: - Initialization
     
@@ -173,6 +175,7 @@ extension CustomNavigationBar {
             self.popupMenuView.alpha = 0
         }) { _ in
             self.popupMenuView.isHidden = true
+            self.onMenuHidden?()
         }
     }
     
@@ -181,6 +184,7 @@ extension CustomNavigationBar {
         self.bringSubviewToFront(self.popupMenuView)
         
         if popupMenuView.isHidden {
+            onMenuShown?()
             popupMenuView.alpha = 0
             popupMenuView.isHidden = false
             UIView.animate(withDuration: 0.2) {

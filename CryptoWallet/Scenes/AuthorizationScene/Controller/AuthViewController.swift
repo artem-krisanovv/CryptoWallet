@@ -245,7 +245,6 @@ extension AuthViewController {
 
 //MARK: Keyboard Will Show Method
 
-
 extension AuthViewController {
     private func setupKeyboardObservers() {
         NotificationCenter.default.addObserver(

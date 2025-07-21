@@ -10,6 +10,7 @@ class HomeViewController: UIViewController {
     private var isAnimatingScroll = false
     private var isSortAscending = true
     private weak var sortButton: UIButton?
+    private var transparentView: UIView?
     
     // MARK: - Lifecycle
     
@@ -18,6 +19,7 @@ class HomeViewController: UIViewController {
         bindViewModel()
         setupUI()
         viewModel.loadAssets()
+        setupCustomNavBarCallbacks()
     }
     
     // MARK: - Private Method
@@ -277,5 +279,47 @@ extension HomeViewController {
         UIView.animate(withDuration: 0.2) {
             sender.transform = self.isSortAscending ? .identity : CGAffineTransform(rotationAngle: .pi)
         }
+    }
+}
+
+//MARK: MoreButton Hide Methods
+
+extension HomeViewController {
+    private func setupCustomNavBarCallbacks() {
+        navBar?.onMenuShown = { [weak self] in
+            self?.showTransparentView()
+        }
+        navBar?.onMenuHidden = { [weak self] in
+            self?.hideЕransparentView()
+        }
+    }
+    
+    private func showTransparentView() {
+        guard transparentView == nil else { return }
+        
+        let transparentView = UIView()
+        transparentView.backgroundColor = .clear
+        transparentView.isUserInteractionEnabled = true
+        view.addSubview(transparentView)
+        transparentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+       
+        let tap = UITapGestureRecognizer(target: self, action: #selector(transparentViewTapped))
+        transparentView.addGestureRecognizer(tap)
+        self.transparentView = transparentView
+        
+        if let navBar {
+            view.bringSubviewToFront(navBar)
+        }
+    }
+    
+    @objc private func transparentViewTapped() {
+        navBar?.moreButtonIsHidden()
+    }
+    
+    private func hideЕransparentView() {
+        transparentView?.removeFromSuperview()
+        transparentView = nil
     }
 }
