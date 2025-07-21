@@ -27,7 +27,7 @@ struct MarketData: Codable {
     let percentChangeUsdLast30Days: Double?
     let percentChangeUsdLast1Year: Double?
     let marketCapUsd: Double?
-    let circulatingSupply: Double?
+    let circulating: Double?
     
     enum CodingKeys: String, CodingKey {
         case priceUsd = "price_usd"
@@ -37,6 +37,6 @@ struct MarketData: Codable {
         case percentChangeUsdLast30Days = "percent_change_usd_last_30_days"
         case percentChangeUsdLast1Year = "percent_change_usd_last_1_year"
         case marketCapUsd = "current_marketcap_usd"
-        case circulatingSupply = "circulating"
+        case circulating = "circulating"
     }
 }

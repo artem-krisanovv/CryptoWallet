@@ -37,6 +37,12 @@ class HomeViewController: UIViewController {
                 }
             }
         }
+        viewModel.onError = {
+            self.showAlert(
+                title: "Ошибка",
+                message: "Обновите и попробуйте еще раз"
+            )
+        }
     }
     
     private func showBlur() {
@@ -188,15 +194,8 @@ extension HomeViewController {
     func setupUI() {
         view.backgroundColor = .secondBackground
         navigationController?.setNavigationBarHidden(true, animated: false)
-        [
-            shadowImageView,
-            illustrationImageView,
-            affiliateLabel,
-            learnMoreButton,
-            trendingTableView,
-            blurView,
-            spinner
-        ].forEach { view.addSubview($0) }
+        [shadowImageView, illustrationImageView, affiliateLabel].addToSuperview(view)
+        [learnMoreButton, trendingTableView, blurView, spinner].addToSuperview(view)
         
         navBar = addCustomNavigationBar(title: "Home", showsRightButton: true)
         navBar?.onUpdateTapped = { [weak self] in
@@ -304,7 +303,7 @@ extension HomeViewController {
         transparentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-       
+        
         let tap = UITapGestureRecognizer(target: self, action: #selector(transparentViewTapped))
         transparentView.addGestureRecognizer(tap)
         self.transparentView = transparentView
@@ -323,3 +322,21 @@ extension HomeViewController {
         transparentView = nil
     }
 }
+
+//MARK: Alert Method
+
+extension HomeViewController {
+    private func showAlert(title: String, message: String) {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(
+                title: title,
+                message: message,
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(alert, animated: true)
+        }
+    }
+}
+
+

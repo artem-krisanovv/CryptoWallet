@@ -140,21 +140,9 @@ extension CryptoDetailViewController {
         view.backgroundColor = .background
         
         customNavBar.addSubview(backButton)
-        [
-            customNavBar,
-            illustrationBackgroundView,
-            titleLabel,
-            priceLabel,
-            percentLabel,
-            changeLabel,
-            marketStatsTitle,
-            marketCapLabel,
-            marketCapValueLabel,
-            supplyLabel,
-            supplyValueLabel,
-            segmentBackgroundView,
-            segmentStack
-        ].forEach { view.addSubview($0) }
+        [customNavBar, illustrationBackgroundView, titleLabel, priceLabel].addToSuperview(view)
+        [percentLabel, changeLabel, marketStatsTitle, marketCapLabel, marketCapValueLabel].addToSuperview(view)
+        [supplyLabel, supplyValueLabel, segmentBackgroundView, segmentStack].addToSuperview(view)
         
         setupSegmentControl()
         addTargetToBackButton()
@@ -283,7 +271,7 @@ extension CryptoDetailViewController {
             marketCapValueLabel.text = "-"
         }
         
-        if let supply = crypto.metrics?.marketData?.circulatingSupply {
+        if let supply = crypto.metrics?.marketData?.circulating {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
             formatter.maximumFractionDigits = 0

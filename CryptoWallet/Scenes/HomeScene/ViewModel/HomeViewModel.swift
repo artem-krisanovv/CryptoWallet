@@ -1,27 +1,27 @@
 import Foundation
 
 class HomeViewModel {
-    
     private(set) var cryptoList: [Crypto] = []
-    private(set) var isLoading: Bool = false
+    private let networkService = NetworkService()
     
     var onUpdate: (() -> Void)?
+    var isLoading: Bool = false
+    var onError: (() -> Void)?
     
-    // MARK: - Loading Data
+    private let allowedCoins = ["btc", "eth", "trx", "luna", "dot", "doge", "usdt", "xlm", "ada", "xrp"]
     
     func loadAssets() {
         isLoading = true
         onUpdate?()
-        
-        NetworkService.shared.fetchAssets { [weak self] result in
-            DispatchQueue.main.async {
-                self?.isLoading = false
-                switch result {
-                case .success(let assets):
-                    self?.cryptoList = assets
-                case .failure:
-                    self?.cryptoList = []
-                }
+        networkService.fetchAssets { [weak self] result in
+            self?.isLoading = false
+            switch result {
+            case .success(let allAssets):
+                let filtered = allAssets.filter { self?.allowedCoins.contains($0.symbol.lowercased()) ?? false }
+                self?.cryptoList = filtered
+                self?.onUpdate?()
+            case .failure(_):
+                self?.onError?()
                 self?.onUpdate?()
             }
         }
@@ -44,7 +44,7 @@ class HomeViewModel {
         case .priceChangeDesc:
             cryptoList.sort {
                 ($0.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0) <
-                ($1.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0)
+                    ($1.metrics?.marketData?.percentChangeUsdLast24Hours ?? 0)
             }
         }
         onUpdate?()

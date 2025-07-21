@@ -82,15 +82,8 @@ class AuthViewController: UIViewController {
 extension AuthViewController {
     private func setupUI() {
         view.backgroundColor = .background
-        [
-            usernameTextField,
-            passwordTextField,
-            loginButton,
-            lightBackgroundImageView,
-            mainBackgroundImageView,
-            shadowImageView,
-            robotImageView
-        ].forEach { view.addSubview($0) }
+        [usernameTextField, passwordTextField, loginButton, lightBackgroundImageView].addToSuperview(view)
+        [mainBackgroundImageView, shadowImageView, robotImageView].addToSuperview(view)
         
         setupConstraints()
         addTargetToLoginButton()
